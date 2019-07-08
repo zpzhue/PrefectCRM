@@ -1,0 +1,23 @@
+{% extends 'stark/base.html' %}
+
+{% block container %}
+    <div class="row">
+        <div class="col-md-4">
+            <div class="alert alert-danger" role="alert">
+                <form action="" method="post" novalidate>
+                    {% csrf_token %}
+                    <p>{{ model_name }}信息</p>
+                    <ul>
+                        <li>{{ obj }}</li>
+                    </ul>
+                    <p>删除后将不可恢复，请确定是否删除？</p>
+                    <div>
+                        <a href="{% url index_url %}" class="btn btn-default">返回</a>
+
+                        <input type="submit" class="btn btn-danger" value="确 认"></input>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock container %}

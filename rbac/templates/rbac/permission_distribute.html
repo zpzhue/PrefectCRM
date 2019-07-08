@@ -1,0 +1,156 @@
+{% extends 'stark/base.html' %}
+
+{% block link %}
+    <style>
+        .li-active{
+            background-color: #428bca;
+        }
+        .li-active a{
+            color: ivory;
+        }
+        .tr_active{
+            background-color: #f1f7fd;
+        }
+
+        .permission_bg{
+            background-color: #f1f7fd;
+            {#opacity: 0.25;#}
+        }
+
+        .permission{
+            line-height: 48px;
+            display: inline-block;
+            margin: 0 10px;
+        }
+
+    </style>
+{% endblock link %}
+
+{% block container %}
+    <div class="container-fluid">
+        <div class="row">
+
+            <div class="col-sm-2">
+                <!--用户管理面板 -->
+                <div class="panel panel-info">
+                    <div class="panel-heading"><i class="fas fa-users fa-lg"></i>&nbsp;&nbsp;<span>用户列表</span></div>
+                    <div class="panel-body">
+                         <ul class="list-group">
+                            {% for user in user_list %}
+                                {% if user.pk|safe == user_id %}
+                                <li class="list-group-item li-active"><a href="?uid={{ user.id }}">{{ user.name }}</a></li>
+                                {% else %}
+                                <li class="list-group-item"><a href="?uid={{ user.id }}">{{ user.name }}</a></li>
+                                {% endif %}
+                            {% endfor %}
+                          </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-3 col-sm-offset-1">
+                <!-- 角色管理面板 -->
+                <form action="" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="post_type" value="role">
+                    <div class="panel panel-warning">
+                        <div class="panel-heading">
+                            <i class="fas fa-edit fa-lg"></i>&nbsp;&nbsp;
+                            <span>角色列表
+                            {% if user_id %}
+                                <button class="btn btn-sm btn-success pull-right center-block" type="submit">
+                                    <i class="fas fa-save fa-lg"></i>&nbsp;&nbsp;保存
+                                </button>
+                            {% endif %}
+                            </span>
+                        </div>
+                        <div class="panel-body">
+                            <p class="text-muted">提示：点击用户后才能为其分配角色</p>
+
+                            <table class="table ">
+                                <thead>
+                                    <tr>
+                                        <th>角色</th>
+                                        <th>选择</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for role in role_list %}
+                                        <div>
+                                            <tr {% if role.id|safe == role_id %} class="tr_active" {% endif %}>
+                                                <td><a href="?rid={{ role.id }}">{{ role.name }}</a></td>
+                                                <td>
+                                                    <input type="checkbox" name="rid" value="{{ role.id }}" {% if role.id in role_id_list  %} checked {% endif %}/>
+                                                </td>
+                                            </tr>
+                                        </div>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="col-sm-5 col-sm-offset-1">
+            <!-- 权限面板列表 -->
+            <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="post_type" value="permission">
+
+                <div class="panel panel-danger">
+                  <div class="panel-heading">权限列表
+                      {% if role_id %}
+                          <button class="btn btn-sm btn-success pull-right center-block" type="submit">
+                              <i class="fas fa-save fa-lg"></i>&nbsp;&nbsp;保存
+                          </button>
+                      {% endif %}
+                  </div>
+                  <div class="panel-body text-muted">
+                    提示：点击角色后才能为其分配权限
+                  </div>
+
+                  <!-- List group -->
+                  <ul class="list-group per_region">
+                      {% for permission in all_permissions %}
+                          {% if not permission.parent_id %}
+                            <li id="pk_{{ permission.id }}" class="list-group-item permission_bg">{{ permission.title }}</li>
+                          {% endif %}
+                      {% endfor %}
+                  </ul>
+                </div>
+            </form>
+        </div>
+
+        </div>
+    </div>
+{% endblock container %}
+
+{% block script %}
+    <script>
+        let permissions = {{ all_permissions_json|safe }};
+
+        $.each(permissions, function (i, per) {
+            var pk = per.id;
+            var title = per.title;
+            var type = per.type;
+            var url = per.url;
+            var pid = per.parent_id;
+
+
+            if (type === 'menu'){
+                var s = `<li id="pk_${pk}" class="list-group-item">${title}</li>`;
+            }else {
+                var s = `<span id="pk_${pk}" class="permission" ><input type="checkbox" name="permission_id" value=${pk}> &nbsp&nbsp${title}</span>`;
+            };
+            $(`#pk_${pid}`).after(s);
+        });
+
+
+        var per_id_list = {{ permission_id_list }};
+        $.each(per_id_list, function (i, per_id) {
+            $(`.per_region [value="${per_id}"]`).prop('checked', true);
+        })
+
+    </script>
+{% endblock script %}

@@ -1,0 +1,9 @@
+<ol class="breadcrumb">
+    {% for path in path_tree_list %}
+        {% if forloop.last %}
+         <li class="active">{{ path }}</li>
+        {% else %}
+         <li class=>{{ path }}</li>
+        {% endif %}
+    {% endfor %}
+</ol>

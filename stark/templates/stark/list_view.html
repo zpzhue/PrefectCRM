@@ -1,0 +1,95 @@
+{% extends 'stark/base.html' %}
+{% load rbac_tag %}
+{% block title %}
+    <title>查看{{ model_name }}</title>
+{% endblock %}
+
+{% block container %}
+
+    <div class="row">
+        <div class="column col-md-11 ">
+
+
+            {% get_tree_list request %}
+
+            <div class="panel panel-info">
+                <div class="panel-heading">
+
+                {# 控制添加按钮权限 #}
+                {% if request|get_per_list %}
+                    <a href="add/" class="btn btn-info">添加{{ model_name }}</a>
+                {% endif %}
+
+                </div>
+                <div class="panel-body">
+                    <div class="panel panel-default">
+
+                        {# 显示过滤字段 #}
+                        {% for field,links in show_list.show_list_filter.items %}
+                            <div class="panel-body">
+                                <span class="btn btn-sm" style="width: 50px">{{ field }}</span>
+                                {% for link in links %}
+                                    {{ link|safe }}
+                                {% endfor %}
+                            </div>
+                        {% endfor %}
+
+                    </div>
+
+                    {# 搜索框 #}
+                    {% if show_list.modelstrak.search_list %}
+                        {% include 'stark/include/search.html' %}
+                    {% endif %}
+
+                    <form class="form-inline" method="post" novalidate>
+                        {% csrf_token %}
+                        <select name="patch_action" class="form-control" style="display: inline-block; width: 150px">
+                            {% for action in show_list.show_actions %}
+                                <option value="{{ action.name }}">{{ action.desc }}</option>
+                            {% endfor %}
+                        </select>
+                        <button type="submit" class="btn btn-info">执行</button>
+                        <table class="table table-bordered table-hover table-striped text-center">
+                            <thead>
+                            <tr>
+                                {% for head in show_list.get_heads %}
+                                    <th class="text-center">{{ head }}</th>
+                                {% endfor %}
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for tr in show_list.get_body %}
+                                <tr>
+                                    {% for td in tr %}
+                                        <td>{{ td|default:"暂无" }}</td>
+                                    {% endfor %}
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </form>
+                    <div class="pull-right">
+                        {{ show_list.paginator.page_html|safe }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock container %}
+
+{% block script %}
+
+    <script>
+        $('.select_all_ckb').click(function () {
+            $('.select_ckb').each(function (i, v) {
+                if ($(v).attr('checked')) {
+                    $(v).attr('checked', false);
+                } else {
+                    $(v).attr('checked', true);
+                }
+            })
+        })
+    </script>
+
+{% endblock script %}

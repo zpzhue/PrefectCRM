@@ -1,0 +1,152 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    {% block title %}
+    <title>CRM管理系统</title>
+    {% endblock title %}
+    <link rel="stylesheet" href="{% static 'plugin/bootstrap-3.3.7/css/bootstrap.min.css' %}">
+    <link rel="shortcut icon" href="{% static '/imgs/luffy-study-logo.png' %}">
+{#    <link rel="stylesheet" href="{% static 'plugin/font-awesome/css/font-awesome.css' %}">#}
+    <link rel="stylesheet" href="{% static 'plugin/fontawesome-free-5.7.2/css/all.css' %}">
+    <link rel="stylesheet" href="{% static 'css/commons.css' %}">
+    <link rel="stylesheet" href="{% static 'css/nav.css' %}">
+    <script src="{% static 'js/jquery-3.3.1.js' %}"></script>
+    <style>
+
+        .pg-body > .left-menu {
+            background-color: #F3F3F3;
+            position: absolute;
+            left: 1px;
+            top: 60px;
+            bottom: 0;
+            width: 220px;
+            {#width: 15%;#}
+            overflow: auto;
+        }
+
+        .pg-body > .right-body {
+            position: absolute;
+            left: 235px;
+            right: 0;
+            top: 120px;
+            bottom: 0;
+            overflow: scroll;
+            border-top: 0;
+            font-size: 13px;
+            min-width: 755px;
+            padding: 20px;
+            margin-left: 80px;
+        }
+
+        .dropdown-menu {
+            top: 118%;
+            left: -108px;
+        }
+
+        a:hover{
+                text-decoration: none!important;
+            }
+
+    </style>
+
+   {% block link %}{% endblock link %}
+
+</head>
+<body>
+
+<div class="pg-header">
+    <div class="nav">
+        <div class="logo-area left">
+            <a href="#">
+                <img class="logo" src="{% static 'imgs/logo.svg' %}">
+                <span style="font-size: 18px;">CRM </span>
+            </a>
+        </div>
+
+        <div class="left-menu left">
+            <a class="menu-item">资产管理</a>
+            <a class="menu-item">用户信息</a>
+            <a class="menu-item">权限管理</a>
+            <div class="menu-item">
+                <span>使用说明</span>
+                <i class="fa fa-caret-down" aria-hidden="true"></i>
+                <div class="more-info">
+                    <a href="#" class="more-item">666</a>
+                    <a href="#" class="more-item">888</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="right-menu right clearfix">
+
+            <!-- Single button -->
+            <div class="btn-group user-info right">
+              <img class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" width="50" height="50" class="img-circle" src="{% static 'imgs/default.jpg' %}">
+
+              <ul class="dropdown-menu small">
+                <li><a href="#" class="more-item">个人信息</a></li>
+                <li><a href="#" class="more-item">注销</a></li>
+                <li><a href="#">修改密码</a></li>
+                <li><a href="#">更换头像</a></li>
+              </ul>
+            </div>
+
+            <a class="user-menu right">
+                <i class="fa fa-user" aria-hidden="true"></i>
+                <span>{{ request.user }}</span>
+            </a>
+
+
+            <a class="user-menu right">
+                消息
+                <i class="fa fa-commenting-o" aria-hidden="true"></i>
+                <span class="badge bg-success">2</span>
+            </a>
+
+            <a class="user-menu right">
+                通知
+                <i class="fa fa-envelope-o" aria-hidden="true"></i>
+                <span class="badge bg-success">2</span>
+            </a>
+
+            <a class="user-menu right">
+                任务
+                <i class="fa fa-bell-o" aria-hidden="true"></i>
+                <span class="badge bg-danger">4</span>
+            </a>
+        </div>
+
+    </div>
+</div>
+
+
+
+
+<div class="pg-body">
+
+        <div class="left-menu">
+             {% block side_bar %}
+              {% load rbac_tag %}
+
+              {% get_menu request %}
+
+             {% endblock side_bar %}
+        </div>
+
+    <div class="right-body">
+         {% block container %}
+
+         {% endblock container %}
+    </div>
+</div>
+
+
+
+
+
+{% block script %}{% endblock script %}
+
+</body>
+</html>

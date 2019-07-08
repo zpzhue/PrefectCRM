@@ -1,0 +1,24 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    {% block title %}
+    <title>Title</title>
+    {% endblock title %}
+
+    {% block link %}
+    <link rel="stylesheet" href="{% static 'plugin/bootstrap-3.3.7/css/bootstrap.css' %}">
+    {% endblock link %}
+
+    {% block script %}
+
+    {% endblock %}
+
+</head>
+<body>
+    {% block container %}
+
+    {% endblock container %}
+</body>
+</html>
